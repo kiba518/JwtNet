@@ -1,0 +1,89 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Jwt</title>
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js">
+    </script>
+</head>
+
+<body>
+    <div> 
+        <script>
+            $(document).ready(function () {
+                $("#request").click(function () {
+                    var token = window.localStorage.getItem('token');
+                    if (token) {
+
+                        $.ajax({
+                            type: "GET",
+                            url: "http://localhost:50525/api/Request",
+                            success: function (data) {
+                                $('#con').append('<div> success：' + data + '</div>');
+                                console.log(data);
+                            },
+                            beforeSend: function (xhr) {
+                                //向Header头中添加Authirization
+                                xhr.setRequestHeader("Authorization", token);
+                            },
+                            error: function (XMLHttpRequest, textStatus, errorThrown) { 
+                                $('#con').append('<div> error：' + errorThrown + '</div>');
+                            }
+                        });
+                    }
+                    else {
+                        alert("token不存在");
+                    }
+                });
+                $("#requestNotoken").click(function () {
+                    var token = window.localStorage.getItem('token');
+                    if (token) {
+
+                        $.ajax({
+                            type: "GET",
+                            url: "http://localhost:50525/api/Request",
+                            success: function (data) {
+                                $('#con').append('<div> success：' + data + '</div>');
+                                console.log(data);
+                            },
+                            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                                $('#con').append('<div> error：' + errorThrown + '</div>');
+                            }
+                        });
+                    }
+                    else {
+                        alert("token不存在");
+                    }
+                });
+                $("#login").click(function () {
+                    $.ajax({
+                        type: "GET",
+                        url: "http://localhost:50525/api/Login/?username=kiba&pwd=518",
+                        success: function (data) {
+                          
+                            $('#con').append('<div> token：' + data + '</div>');
+                            console.log(data);
+                            window.localStorage.setItem('token', data)  
+                        }
+                    });
+                });
+            });
+
+
+        </script>
+
+        <h1>测试JWT</h1>
+
+        <button id="login">登录</button>
+        <button id="request">带token访问Api</button>
+        <button id="requestNotoken">无token访问Api</button>
+        <div id="con"></div>
+    </div> 
+
+</body>
+</html>
